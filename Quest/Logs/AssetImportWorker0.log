@@ -416,3 +416,4 @@ Received Import Request.
 Start importing Assets/Scripts/CustomController.cs using Guid(95b7e44a59832674abd51dd819994fee) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8dfecf7332cf60a0b891fa522cac4254') in 0.001889 seconds
   Import took 0.004623 seconds .
 
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
