@@ -10,8 +10,10 @@ public class CustomController : MonoBehaviour
     private Animator handAnimator;
     private GameObject controllerInstance; //디바이스 오브젝트
     private GameObject handInstance;       //hand 오브젝트
-    private InputDevice availableDevice;   //연결된 컨트롤러가 무엇인지 알려줌
+    public InputDevice availableDevice;   //연결된 컨트롤러가 무엇인지 알려줌
 
+    public GameObject HandGun;
+    public bool triggerButton;
     //디바이스 속성들의 정의 => 연결시 여러 디바이스가 들어오기 때문에 나눠줌
     //사람들이 임의로 정의해준 디바이스 열거 넘버
     public InputDeviceCharacteristics characteristics;
@@ -77,7 +79,7 @@ public class CustomController : MonoBehaviour
         if (!availableDevice.isValid)
         {
             TryInitialize();
-            return ;
+            return;
         }
         if (renderController)
         {
@@ -90,29 +92,53 @@ public class CustomController : MonoBehaviour
             controllerInstance.SetActive(false);
             UpdateHandAnimation();
         }
-    }
+        if (HandGun != null)
+        {
+            bool menuButtonValue;
+            if (availableDevice.TryGetFeatureValue(CommonUsages.triggerButton, out menuButtonValue) && menuButtonValue)
+            {
+                if (triggerButton == false)
+                {
+                    HandGun.GetComponent<SimpleShoot>().Shoot();
+                    triggerButton = true;
+                }
+            }
+            else
+            {
+                triggerButton = false;
+            }
+        }
+        if (FindObjectOfType<GameManager>().isGameOver)
+        {
+            bool menuButtonvalue;
+            if (availableDevice.TryGetFeatureValue(CommonUsages.menuButton, out menuButtonvalue) && menuButtonvalue)
+            {
+                FindObjectOfType<GameManager>().RestartGame();
+            }
+        }
 
-    void UpdateHandAnimation()
-    {
-        // 현재 값에 액세스하려고 시도하며 다음을 반환
-        //특정 기능 값을 검색해서 가져오면 true를 반환합니다.
-        //현재 기기가 특정 기능을 지원하지 않거나, 기기가 유효하지 않은 경우(예: 컨트롤러 비활성) false를 반환합니다.
-        if (availableDevice.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue))
+        void UpdateHandAnimation()
         {
-            handAnimator.SetFloat("Trigger", triggerValue);
-        }
-        else
-        {
-            handAnimator.SetFloat("Trigger", 0);
-        }
+            // 현재 값에 액세스하려고 시도하며 다음을 반환
+            //특정 기능 값을 검색해서 가져오면 true를 반환합니다.
+            //현재 기기가 특정 기능을 지원하지 않거나, 기기가 유효하지 않은 경우(예: 컨트롤러 비활성) false를 반환합니다.
+            if (availableDevice.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue))
+            {
+                handAnimator.SetFloat("Trigger", triggerValue);
+            }
+            else
+            {
+                handAnimator.SetFloat("Trigger", 0);
+            }
 
-        if (availableDevice.TryGetFeatureValue(CommonUsages.grip, out float gripValue))
-        {
-            handAnimator.SetFloat("Grip", gripValue);
-        }
-        else
-        {
-            handAnimator.SetFloat("Grip", 0);
+            if (availableDevice.TryGetFeatureValue(CommonUsages.grip, out float gripValue))
+            {
+                handAnimator.SetFloat("Grip", gripValue);
+            }
+            else
+            {
+                handAnimator.SetFloat("Grip", 0);
+            }
         }
     }
 }
