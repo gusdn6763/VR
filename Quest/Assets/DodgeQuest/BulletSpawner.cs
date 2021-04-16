@@ -30,22 +30,24 @@ public class BulletSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timeAffterSpawn += Time.deltaTime;
-
-        if(timeAffterSpawn >= spwanRate)
+        if (FindObjectOfType<GameManager>().gameStart == true)
         {
-            timeAffterSpawn = 0f;
+            timeAffterSpawn += Time.deltaTime;
 
-            if (!FindObjectOfType<GameManager>().isGameOver)
+            if (timeAffterSpawn >= spwanRate)
             {
+                timeAffterSpawn = 0f;
 
-                GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
-                bullet.transform.LookAt(target);
-                audioSource.PlayOneShot(audioClip);
+                if (!FindObjectOfType<GameManager>().isGameOver &&
+                    Vector3.Distance(target.transform.position, transform.position) <= 30.0f)
+                {
+                    GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+                    bullet.transform.LookAt(target);
+                    audioSource.PlayOneShot(audioClip);
+                }
+                spwanRate = Random.Range(spwanRateMin, spwanRateMax);
             }
-            spwanRate = Random.Range(spwanRateMin, spwanRateMax);
         }
-
     }
 
     public void GetDamage(float amount)

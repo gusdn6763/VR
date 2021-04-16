@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Text hpText;
     public Text scoreText;
     int score;
+    public bool gameStart = false;
     public bool isGameOver;
 
     // Start is called before the first frame update

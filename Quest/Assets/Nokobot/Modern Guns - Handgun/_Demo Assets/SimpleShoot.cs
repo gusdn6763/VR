@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class SimpleShoot : MonoBehaviour
     public bool isGrab = false;
     public AudioClip audioClip;
     public AudioSource audioSource;
-
+    public HandState currentGrab;
      
 
 
@@ -50,6 +51,26 @@ public class SimpleShoot : MonoBehaviour
     public void dropGun()
     {
         isGrab = false;
+    }
+
+    public void SetGraspState(HandState state)
+    {
+        currentGrab = state;
+    }
+
+    public void SetGraspNONE()
+    {
+            currentGrab = HandState.NONE;
+    }
+
+    public void SetGraspLEFT()
+    {
+        currentGrab = HandState.LEFT;
+    }
+
+    public void SetGraspRIGHT()
+    {
+        currentGrab = HandState.RIGHT;
     }
 
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
+public enum HandState {  NONE = 0, LEFT = 1, RIGHT = 2}
 public class CustomController : MonoBehaviour
 {
     //디바이스 모델들
@@ -18,6 +19,7 @@ public class CustomController : MonoBehaviour
     //사람들이 임의로 정의해준 디바이스 열거 넘버
     public InputDeviceCharacteristics characteristics;
 
+    public HandState currentHand;
     public GameObject handModel;          //hand모델
     public bool renderController = false; //hand인지 컨트롤러인지 확인하는 변수
 
@@ -41,21 +43,49 @@ public class CustomController : MonoBehaviour
         if (devices.Count > 0)
         {
             availableDevice = devices[0];
-
-            //Oculus Quest Controller를 구버전으로 인식해서 구버전이름을 인식시 신버전으로 이름을 바꾼다.
             string name = "";
-            if ("Oculus Touch Controller - Left" == availableDevice.name)
-            {
-                name = "Oculus Quest Controller - Left";
-            }
-            else if ("Oculus Touch Controller - Right" == availableDevice.name)
-            {
-                name = "Oculus Quest Controller - Right";
-            }
             GameObject currentControllerModel = controllerModels.Find(controller => controller.name == name);
+
+
+            ////Oculus Quest Controller를 구버전으로 인식해서 구버전이름을 인식시 신버전으로 이름을 바꾼다.
+            //if ("Oculus Touch Controller - Left" == availableDevice.name)
+            //{
+            //    name = "Oculus Quest Controller - Left";
+            //}
+            //else if ("Oculus Touch Controller - Right" == availableDevice.name)
+            //{
+            //    name = "Oculus Quest Controller - Right";
+            //}
 
             //GameObject currentControllerModel = controllerModels.Find(controller => controller.name == availableDevice.name);
             //9개 모델을 찾아서 3D모델을 찾아주자
+            //if (currentControllerModel)
+            //{
+            //    controllerInstance = Instantiate(currentControllerModel, transform);
+            //}
+            ////설정해둔게 없을경우 기본 모델로 만들어줌
+            //else
+            //{
+            //    Debug.Log("Didn't get suitable controller model");
+            //    controllerInstance = Instantiate(controllerModels[0], transform);
+            //}
+
+            if (availableDevice.name.Contains("Left"))
+            {
+                currentControllerModel = controllerModels[1];
+                currentHand = HandState.LEFT; 
+            }
+            else if (availableDevice.name.Contains("Right"))
+            {
+                currentControllerModel = controllerModels[2];
+                currentHand = HandState.RIGHT;
+            }
+            else
+            {
+                currentControllerModel = null;
+                currentHand = HandState.NONE;     
+            }
+
             if (currentControllerModel)
             {
                 controllerInstance = Instantiate(currentControllerModel, transform);
@@ -66,6 +96,7 @@ public class CustomController : MonoBehaviour
                 Debug.Log("Didn't get suitable controller model");
                 controllerInstance = Instantiate(controllerModels[0], transform);
             }
+
 
             handInstance = Instantiate(handModel, transform);
             handAnimator = handInstance.GetComponent<Animator>();
@@ -79,7 +110,6 @@ public class CustomController : MonoBehaviour
         if (!availableDevice.isValid)
         {
             TryInitialize();
-            return;
         }
         if (renderController)
         {
@@ -97,8 +127,10 @@ public class CustomController : MonoBehaviour
             bool menuButtonValue;
             if (availableDevice.TryGetFeatureValue(CommonUsages.triggerButton, out menuButtonValue) && menuButtonValue)
             {
-                if (triggerButton == false)
+                if (triggerButton == false && currentHand == HandGun.GetComponent<SimpleShoot>().currentGrab)
                 {
+                    Debug.Log("asd");
+                    FindObjectOfType<GameManager>().gameStart = true;
                     HandGun.GetComponent<SimpleShoot>().Shoot();
                     triggerButton = true;
                 }
