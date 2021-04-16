@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         }
         DontDestroyOnLoad(this);
+
         spawnPoints = spawnPoint.GetComponentsInChildren<Transform>();
     }
 

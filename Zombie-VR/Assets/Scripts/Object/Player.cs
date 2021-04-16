@@ -6,17 +6,8 @@ public class Player : MovingObject
 {
     public static Player instance;
 
-    public enum CharacterStatus
-    {
-        NONE,
-        IDLE,
-        MOVE,
-        ATTACK,
-        DIE
-    }
-
-    public CharacterStatus playerStatus;
-    private void Awake()
+    private Shake Dmgshake;
+    public override void Awake()
     {
         if (instance == null)
         {
@@ -27,6 +18,13 @@ public class Player : MovingObject
             Destroy(this);
         }
         DontDestroyOnLoad(this);
+        Dmgshake = GetComponent<Shake>();
+    }
+
+    public override void Damaged(float damage)
+    {
+        StartCoroutine(Dmgshake.ShakeCamera());
+        base.Damaged(damage);
     }
 
     public void ResetPlayer()
@@ -45,7 +43,6 @@ public class Player : MovingObject
     public override void Die()
     {
         base.Die();
-        playerStatus = CharacterStatus.DIE;
     }
 
     public void Dead()

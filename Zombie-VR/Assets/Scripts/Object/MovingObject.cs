@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
 public class MovingObject : MonoBehaviour
 {
     protected Animator animator;
@@ -15,7 +14,6 @@ public class MovingObject : MonoBehaviour
 
     public virtual void Awake()
     {
-        animator = GetComponent<Animator>();
     }
 
     public virtual void Start()

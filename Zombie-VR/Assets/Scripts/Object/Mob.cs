@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(Animator), typeof(NavMeshAgent))]
 public class Mob : MovingObject
 {
 
@@ -59,6 +60,7 @@ public class Mob : MovingObject
     public override void Awake()
     {
         base.Awake();
+        animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         target = Player.instance.transform;
     }
