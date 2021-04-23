@@ -129,7 +129,6 @@ public class CustomController : MonoBehaviour
             {
                 if (triggerButton == false && currentHand == HandGun.GetComponent<SimpleShoot>().currentGrab)
                 {
-                    Debug.Log("asd");
                     FindObjectOfType<GameManager>().gameStart = true;
                     HandGun.GetComponent<SimpleShoot>().Shoot();
                     triggerButton = true;

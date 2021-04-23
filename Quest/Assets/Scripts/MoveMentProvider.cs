@@ -12,7 +12,6 @@ public class MoveMentProvider : MonoBehaviour
     public List<XRController> controllers = null;               //컨트롤러 리스트 (여러개가 설정될 수 도있음)
     public float speed = 1.0f;
     public float gravityMultiplier = 1f;                        //중력영향
-
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -28,6 +27,13 @@ public class MoveMentProvider : MonoBehaviour
         PositionController(); 
         CheckForInput();
         ApplyGravity();
+    }
+
+    public void Move()
+    {
+        Vector3 dir = new Vector3(0, 0, 1.0f);
+        Vector3 movement = dir * speed;
+        characterController.Move(movement * Time.deltaTime);
     }
 
     //현재 위치 설정
@@ -76,9 +82,10 @@ public class MoveMentProvider : MonoBehaviour
     //중력 적용
     void ApplyGravity()
     {
-        
         Vector3 gravity = new Vector3(0, Physics.gravity.y * gravityMultiplier, 0);
         gravity.y *= Time.deltaTime;
         characterController.Move(gravity * Time.deltaTime);
     }
+
+
 }

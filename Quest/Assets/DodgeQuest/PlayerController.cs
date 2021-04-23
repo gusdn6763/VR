@@ -5,14 +5,12 @@ using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody playerRigidbody;
     public float speed = 8f;
     public float hp = 100f;
 
     // Start is called before the first frame update
     void Start()
     {
-        playerRigidbody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -28,5 +26,20 @@ public class PlayerController : MonoBehaviour
     {
         gameObject.SetActive(false);
         FindObjectOfType<GameManager>().EndGame();
+    }
+    public void GetDamage(float amounnt)
+    {
+        hp -= (int)(amounnt / 2.0f);
+        if (hp <= 0)
+        {
+            FindObjectOfType<GameManager>().isGameOver = true;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "PUNCH")
+        {
+            GetDamage(10f);
+        }
     }
 }
